@@ -2,6 +2,7 @@
 # Example for Linear Regression / predicting insurance cost
 
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
@@ -9,6 +10,7 @@ from sklearn.metrics import mean_absolute_error
 import dataInfo
 import preprocess
 import model
+import plot
 
 
 ###################################
@@ -33,11 +35,25 @@ print(X.sex.unique())              # nominal data --> one hot encode
 print(X.smoker.unique())           # ordinal data --> ordinal encode
 print(X.region.unique())           # nominal data --> one hot encode
 
+
+
 X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2,random_state=0)
 
 preprocessor = preprocess.encode()
-#trans=preprocessor.fit_transform(X) #####################################new dataframe
-#print(trans)
+
+trans=preprocessor.fit_transform(X_train) #####################################new dataframe
+'''
+###for plotting
+
+print(trans)
+df = pd.DataFrame(trans, #mit ohe codierten...
+                  columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region'])    ##recreate dataframe
+plot.pairplot(df,y)
+#####
+'''
+print(trans[:,0])
+np.savetxt('transformed.csv',trans,delimiter=",")
+plot.regplot(X_train, y_train)
 model = model.linearRegression()
 
 pipe = Pipeline(steps=[('preprocessor', preprocessor),
