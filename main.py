@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
+from sklearn.linear_model import LinearRegression
+from xgboost import XGBRegressor
 
 import dataInfo
 import preprocess
@@ -42,6 +44,7 @@ X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test
 preprocessor = preprocess.encode()
 
 trans=preprocessor.fit_transform(X_train) #####################################new dataframe
+plot.regplot(X_train, y_train)
 '''
 ###for plotting
 
@@ -51,9 +54,9 @@ df = pd.DataFrame(trans, #mit ohe codierten...
 plot.pairplot(df,y)
 #####
 '''
-print(trans[:,0])
-np.savetxt('transformed.csv',trans,delimiter=",")
-plot.regplot(X_train, y_train)
+
+#linear Regression
+###################################################################
 model = model.linearRegression()
 
 pipe = Pipeline(steps=[('preprocessor', preprocessor),
@@ -63,24 +66,37 @@ pipe.fit(X_train, y_train)
 
 predictions = pipe.predict(X_valid)
 
-print('MAE LinReg :', mean_absolute_error(y_valid, predictions))
-
-
-#pruefe()
+print('MAE Linear Regression with all values :', mean_absolute_error(y_valid, predictions))
+print('relative error: ',mean_absolute_error(y_valid, predictions)/ np.mean(y))
 
 
 
-'''
 ###### xgboost reference
-modelxgb = model.xgboost()
+modelxgb = XGBRegressor(random_state=0, colsample_bytree=0.9, max_depth=20, n_estimators=1400, reg_alpha=1.5,
+                         reg_lambda=1.1, subsample=0.7)
 
 pipe1 = Pipeline(steps=[('preprocessor', preprocessor),
                            ('model', modelxgb)])
 
-pipe.fit(X_train, y_train)
+pipe1.fit(X_train, y_train)
 
-predictions = pipe.predict(X_valid)
+predictions = pipe1.predict(X_valid)
 
 print('MAE XGB :', mean_absolute_error(y_valid, predictions))
+print('relative error: ',mean_absolute_error(y_valid, predictions)/ np.mean(y))
 
-'''
+
+############################################
+#Linear Regression only with numerical values
+X.drop(['smoker','sex','region'],axis=1,inplace=True)
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2,random_state=0)
+print(X_train.head())
+model1 = LinearRegression()
+model1.fit(X_train,y_train)
+predictions = model1.predict(X_valid)
+print('MAE Linear Regression with numeric values :', mean_absolute_error(y_valid, predictions))
+print('relative error: ',mean_absolute_error(y_valid, predictions)/ np.mean(y))
+
+
+
+

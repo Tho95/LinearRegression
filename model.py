@@ -3,10 +3,14 @@
 from sklearn.linear_model import LinearRegression
 from xgboost import XGBRegressor
 
+
 def linearRegression():
     model = LinearRegression()
     print('bin in model')
     return model
+
+
+
 
 def xgboost(): #as reference
     model = XGBRegressor(random_state=0, colsample_bytree=0.9, max_depth=20, n_estimators=1400, reg_alpha=1.5,
