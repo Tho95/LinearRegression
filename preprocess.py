@@ -6,6 +6,7 @@ from sklearn.compose import ColumnTransformer
 
 
 def encode():
+    '''Function for encoding the categorical columns with either ordinal encoding or nominal encoding'''
     ordinal_cols = list(['smoker'])
     nominal_cols = list(['sex', 'region'])
 

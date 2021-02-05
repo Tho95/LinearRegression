@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import OrdinalEncoder
 
 def regplot(X,y):
-    print('bin im plot')
+    '''Function for plotting the variables of input X against the target y'''
 
     fig, axes = plt.subplots(2,3,figsize=(16,8))
     fig.suptitle('charges for insurance')
