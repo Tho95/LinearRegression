@@ -5,9 +5,10 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score
 from sklearn.linear_model import LinearRegression
 from xgboost import XGBRegressor
+
 
 import dataInfo
 import preprocess
@@ -66,8 +67,20 @@ pipe.fit(X_train, y_train)
 
 predictions = pipe.predict(X_valid)
 
-print('MAE Linear Regression with all values :', mean_absolute_error(y_valid, predictions))
+print('\n \nMAE Linear Regression with all values :', mean_absolute_error(y_valid, predictions))
 print('relative error: ',mean_absolute_error(y_valid, predictions)/ np.mean(y))
+print('mean squared error: ',mean_squared_error(y_valid, predictions))
+print('R2 score: ', r2_score(y_valid, predictions))
+print('Slope: ', model.coef_)
+print('\n \nIntercept: ', model.intercept_)
+#R2 score is a statistical measure of how close the data is to the fitted line (coefficent of (multiple)
+#determination)), it's the percentage of the response variable variation
+# 0...100%, the higher the better the model fits the data
+
+#Conclusion for the model: Linear Regression is okay for the dataset. the R2 value is high. the plots show that
+#the variance for each plot is pretty high. Nevertheless we have a more or less good prediction for the values
+#Even a xgboost model ( which was not optimized) was just a little bit better than our LinearRegessrion model.
+
 
 
 
